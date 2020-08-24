@@ -32,20 +32,20 @@ export default {
     },
     methods: {
         deleteSmoothie(id) {
-            this.smoothies = this.smoothies.filter(
-                (smoothie) => smoothie.id !== id
-            );
+            db.collection('smoothies')
+                .doc(id)
+                .delete()
+                .then(() => {
+                    this.smoothies = this.smoothies.filter(
+                        (smoothie) => smoothie.id !== id
+                    );
+                });
         },
     },
     created() {
         db.collection('smoothies')
             .get()
             .then((snapshot) => {
-                // snapshot.forEach((doc) => {
-                //     let smoothie = doc.data();
-                //     smoothie.id = doc.id;
-                //     this.smoothies.push(smoothie);
-                // });
                 this.smoothies = snapshot.docs.map((doc) => ({
                     ...doc.data(),
                     id: doc.id,
