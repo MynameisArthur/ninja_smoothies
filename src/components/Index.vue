@@ -22,24 +22,12 @@
 </template>
 
 <script>
+import db from '@/firebase/init';
 export default {
     name: 'Index',
     data() {
         return {
-            smoothies: [
-                {
-                    title: 'Ninja Brew',
-                    slug: 'ninja-brew',
-                    ingredients: ['banans', 'coffe', 'milk'],
-                    id: '1',
-                },
-                {
-                    title: 'Morning Mood',
-                    slug: 'morning-mood',
-                    ingredients: ['mango', 'lime', 'juice'],
-                    id: '2',
-                },
-            ],
+            smoothies: [],
         };
     },
     methods: {
@@ -48,6 +36,21 @@ export default {
                 (smoothie) => smoothie.id !== id
             );
         },
+    },
+    created() {
+        db.collection('smoothies')
+            .get()
+            .then((snapshot) => {
+                // snapshot.forEach((doc) => {
+                //     let smoothie = doc.data();
+                //     smoothie.id = doc.id;
+                //     this.smoothies.push(smoothie);
+                // });
+                this.smoothies = snapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id,
+                }));
+            });
     },
 };
 </script>
